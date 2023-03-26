@@ -94,3 +94,9 @@ body {
       opacity: 0;
     }
   }
+
+@media screen and (max-width: 600px) {
+  .cover-container{
+    max-width: 100vw;
+  }
+}
