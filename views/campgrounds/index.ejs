@@ -1,0 +1,63 @@
+<% layout('layouts/boilerplate')%>
+
+<div id="map"></div>
+<div class="d-flex flex-column justify-content-center align-items-center">
+    <form action="/campgrounds" method="GET" class="m-4">
+        <div class="input-group">
+            <input type="text" class="form-control" name="q" placeholder="Search Campgrounds...">
+            <div class="input-group-append">
+              <button class="btn btn-secondary rounded-0 rounded-right" type="submit">
+                <i class="fa fa-search"></i>
+              </button>
+            </div>
+        </div>
+    </form>  
+</div>
+<% for (let campground of campgrounds){%>
+<div class="card mb-3">
+    <div class="row">
+        <div class="col-md-4 d-flex align-items-center">
+            <img class="img-fluid" alt="" src="<%=campground.images[0].url%>">
+        </div>
+        <div class="col-md-8">
+            <div class="card-body">
+                <div class="d-flex align-items-center justify-content-between">
+                    <h5 class="card-title"><%= campground.title%></h5>
+                    <h6>₹<%=campground.price %>/Night</h6>
+                </div>
+                <p class="card-text mb-2 description"><%= campground.description %></p>
+                <p class="card-text mb-2">
+                    <small class="text-muted"><%= campground.location%></small>
+                </p>
+                <p class="card-text mb-2">
+                    <% if(campground.reviews.length === 0) { %>
+                        <span class="text-muted">No Reviews</span>
+                    <% } 
+                    else { %>
+                        <% var stars = ['<i class="fa fa-star grey"></i>', '<i class="fa fa-star grey "></i>', '<i class="fa fa-star grey "></i>', '<i class="fa fa-star grey "></i>', '<i class="fa fa-star grey"></i>'] %>
+                        <% for(var i = 0; i < Math.round(campground.avgRating); i++) { %>
+                            <% stars[i] = '<i class="fa fa-star text-danger "></i>' %>
+                        <% } %>
+                        <% for(var i = 0; i < stars.length; i++) { %>
+                          <%- stars[i] %>
+                        <% } %>
+                        <% if (campground.reviews.length === 1) { %>
+                          <span class="text-muted"><%= campground.reviews.length %> Review</span>
+                        <% } else { %>
+                          <span class="text-muted"><%= campground.reviews.length %> Reviews</span>
+                        <% } %>
+                    <% } %>
+                </p>
+                <a class="btn btn-primary" href="/campgrounds/<%=campground._id%>">View <%=campground.title%></a>
+            </div>
+        </div>
+    </div>
+</div>
+<% }%>
+
+<script>
+    const mapToken = '<%-process.env.MAPBOX_TOKEN%>';
+    const campgrounds = { features: <%- JSON.stringify(campgrounds) %>}
+</script>
+
+<script src="/javascripts/clusterMap.js"></script>
